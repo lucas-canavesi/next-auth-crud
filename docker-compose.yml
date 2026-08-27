@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.4 # Utilize a imagem oficial do MySQL na versão 8.4.
+    container_name: next-auth-crud-mysql # Nome do Container
+    restart: unless-stopped # Se o container parar por falha ou reinicialização ele reinicia 
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password # É a senha do usuário administrador do MySQL.
+      MYSQL_DATABASE: next_auth_crud # Nome do Banco
+      MYSQL_USER: app_user # Usuário da Aplicação
+      MYSQL_PASSWORD: app_password # Senha da aplicação
+    ports:
+      - "3306:3306" # Porta do Computador : Porta do Container
+    volumes:
+      - mysql_data:/var/lib/mysql # Onde os dados ficam guardadodos no container
+
+volumes:
+  mysql_data:

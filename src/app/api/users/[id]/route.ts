@@ -11,14 +11,14 @@ export async function PUT(
 ) {
   try {
 
-    const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
-    if (!currentUser) {
-      return Response.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
-   }
+if (!currentUser) {
+  return Response.json(
+    { error: "Not authenticated" },
+    { status: 401 }
+  );
+}
 
     const { id } = await context.params;
     const userId = Number(id);
@@ -29,6 +29,13 @@ export async function PUT(
         { status: 400 }
       );
     }
+
+    if (currentUser.role !== "ADMIN" && currentUser.id !== userId) {
+  return Response.json(
+    { error: "Forbidden" },
+    { status: 403 }
+  );
+}
 
     const body = await request.json();
     const { name, email } = body;
@@ -121,12 +128,19 @@ export async function DELETE(
 
    const currentUser = await getCurrentUser();
 
-    if (!currentUser) {
-     return Response.json(
-       { error: "Not authenticated" },
-       { status: 401 }
-     );
-   }
+if (!currentUser) {
+  return Response.json(
+    { error: "Not authenticated" },
+    { status: 401 }
+  );
+}
+
+if (currentUser.role !== "ADMIN") {
+  return Response.json(
+    { error: "Forbidden" },
+    { status: 403 }
+  );
+}
 
     const { id } = await context.params;
     const userId = Number(id);

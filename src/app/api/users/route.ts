@@ -1,17 +1,14 @@
-import { getCurrentUser } from "@/lib/auth";
+import { requireAdmin } from "@/lib/authorization";
 import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
 
-  const currentUser = await getCurrentUser();
+const { response } = await requireAdmin();
 
-if (!currentUser) {
-  return Response.json(
-    { error: "Not authenticated" },
-    { status: 401 }
-  );
-}  
+if (response) {
+  return response;
+} 
 
   const users = await prisma.user.findMany({
     select: {
@@ -27,14 +24,11 @@ if (!currentUser) {
 export async function POST(request: Request) {
   try {
 
-   const currentUser = await getCurrentUser();
+const { response } = await requireAdmin();
 
-  if (!currentUser) {
-    return Response.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
-  }
+if (response) {
+  return response;
+}
 
     const body = await request.json();
 
